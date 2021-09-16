@@ -73,7 +73,7 @@ class Octoball
   ::ActiveRecord::Relation.prepend(RelationCurrentShard)
   ::ActiveRecord::QueryMethods::WhereChain.prepend(RelationCurrentShard)
   ::ActiveRecord::Associations::CollectionAssociation.prepend(ShardedCollectionAssociation)
-  ::ActiveRecord::Associations::CollectionProxy.singleton_class.prepend(ShardedCollectionProxyCreate)
+  #::ActiveRecord::Associations::CollectionProxy.singleton_class.prepend(ShardedCollectionProxyCreate)
   ::ActiveRecord::Associations::CollectionProxy.prepend(ShardedCollectionProxy)
   ::ActiveRecord::Associations::SingularAssociation.prepend(ShardedSingularAssociation)
 end
