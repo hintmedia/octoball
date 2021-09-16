@@ -28,6 +28,7 @@ class Octoball
 
   module ShardedCollectionProxyCreate
     def create(klass, association)
+      binding.pry
       shard = association.owner.current_shard
       return super unless shard
       return RelationProxy.new(super, shard) if shard == ActiveRecord::Base.current_shard
@@ -46,6 +47,7 @@ class Octoball
      :many?, :pluck, :replace, :select, :size, :sum, :to_a, :uniq].each do |method|
       class_eval <<-"END", __FILE__, __LINE__ + 1
         def #{method}(*args, &block)
+          binding,pry
           return super if !@association.owner.current_shard || @association.owner.current_shard == ActiveRecord::Base.current_shard
           ActiveRecord::Base.connected_to(shard: @association.owner.current_shard, role: Octoball.current_role) do
             super
@@ -73,7 +75,7 @@ class Octoball
   ::ActiveRecord::Relation.prepend(RelationCurrentShard)
   ::ActiveRecord::QueryMethods::WhereChain.prepend(RelationCurrentShard)
   ::ActiveRecord::Associations::CollectionAssociation.prepend(ShardedCollectionAssociation)
-  #::ActiveRecord::Associations::CollectionProxy.singleton_class.prepend(ShardedCollectionProxyCreate)
+  ::ActiveRecord::Associations::CollectionProxy.singleton_class.prepend(ShardedCollectionProxyCreate)
   ::ActiveRecord::Associations::CollectionProxy.prepend(ShardedCollectionProxy)
   ::ActiveRecord::Associations::SingularAssociation.prepend(ShardedSingularAssociation)
 end
