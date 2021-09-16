@@ -47,7 +47,7 @@ class Octoball
      :many?, :pluck, :replace, :select, :size, :sum, :to_a, :uniq].each do |method|
       class_eval <<-"END", __FILE__, __LINE__ + 1
         def #{method}(*args, &block)
-          binding,pry
+          binding.pry
           return super if !@association.owner.current_shard || @association.owner.current_shard == ActiveRecord::Base.current_shard
           ActiveRecord::Base.connected_to(shard: @association.owner.current_shard, role: Octoball.current_role) do
             super
