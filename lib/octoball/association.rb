@@ -44,7 +44,7 @@ class Octoball
   end
 
   module ShardedSingularAssociation
-    [:reader, :writer, :create, :create!, :build].each do |method|
+    [:reload, :reader, :writer, :create, :create!, :build].each do |method|
       class_eval <<-"END", __FILE__, __LINE__ + 1
         def #{method}(*args, &block)
           return super if !owner.current_shard || owner.current_shard == ActiveRecord::Base.current_shard
